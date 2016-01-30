@@ -11,11 +11,9 @@ public class BallScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myRigidBody = GetComponent<Rigidbody2D> ();
-		myRigidBody.AddForce (new Vector2(0, -force));
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+	void FixedUpdate () {
 		myRigidBody.AddForce (new Vector2(0, -force));
 	}
 }
