@@ -4,6 +4,12 @@
 Temp/
 Library/
 
+# ===================== #
+# MonoDevelop generated #
+# ===================== #
+/*.csproj
+/*.sln
+
 # =============== #
 # Other generated #
 # =============== #
