@@ -8,6 +8,9 @@ public class PaddleScript : MonoBehaviour {
 	[SerializeField]
 	float speed = 0.01f;
 
+	float kLeftLimit = -5.28f; // x position that we cannot go past
+	float kRightLimit = 5.28f;
+
 	// Use this for initialization
 	void Start () {
 		myTransform = GetComponent<Transform> ();
@@ -16,10 +19,20 @@ public class PaddleScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Vector2 curPos = myTransform.position;
+		float newX = 0f;
+
 		if (Input.GetKey ("left")) {
-			myTransform.position = new Vector2 (curPos.x - speed, curPos.y);
+			newX = curPos.x - speed;
+			if (newX < kLeftLimit)
+				newX = kLeftLimit;
+			
+			myTransform.position = new Vector2 (newX, curPos.y);
 		} else if (Input.GetKey ("right")) {
-			myTransform.position = new Vector2 (curPos.x + speed, curPos.y);
+			newX = curPos.x + speed;
+			if (newX > kRightLimit)
+				newX = kRightLimit;
+			
+			myTransform.position = new Vector2 (newX, curPos.y);
 		}
 	}
 }
