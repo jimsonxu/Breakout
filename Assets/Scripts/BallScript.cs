@@ -4,16 +4,13 @@ using System.Collections;
 public class BallScript : MonoBehaviour {
 
 	[SerializeField]
-	float force = 4.5f;
+	float m_speed = 5;
 
-	Rigidbody2D myRigidBody;
+	Rigidbody2D m_rigidBody;
 
 	// Use this for initialization
 	void Start () {
-		myRigidBody = GetComponent<Rigidbody2D> ();
-	}
-
-	void FixedUpdate () {
-		myRigidBody.AddForce (new Vector2(0, -force));
+		m_rigidBody = GetComponent<Rigidbody2D> ();
+		m_rigidBody.velocity = Vector2.down * m_speed;
 	}
 }
