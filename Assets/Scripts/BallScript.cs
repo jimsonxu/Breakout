@@ -7,14 +7,11 @@ public class BallScript : MonoBehaviour {
 	float m_speed = 5;
 
 	Rigidbody2D m_rigidBody;
-	Collider2D m_collider;
 
 	// Use this for initialization
 	void Start () {
 		m_rigidBody = GetComponent<Rigidbody2D> ();
 		m_rigidBody.velocity = Vector2.down * m_speed;
-
-		m_collider = GetComponent<Collider2D> ();
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
