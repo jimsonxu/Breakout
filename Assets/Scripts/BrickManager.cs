@@ -5,6 +5,9 @@ using System;
 
 public class BrickManager : MonoBehaviour {
 
+	Vector2 kTopLeft;
+	const float kCfgPixel = 0.5f; // 1 cfg pixel is 0.5 game pixels
+
 	[SerializeField]
 	Transform m_brickPrefab;
 
@@ -12,6 +15,7 @@ public class BrickManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		kTopLeft = new Vector2 (-6.87f, 4.6f);
 		LoadBricksCfg ();
 
 		Color colorOdd = Color.white;
@@ -26,7 +30,7 @@ public class BrickManager : MonoBehaviour {
 					renderer.color = colorEven;
 				else
 					renderer.color = colorOdd;
-				
+
 				Instantiate (m_brickPrefab, new Vector2 (x, y), Quaternion.identity);
 				cnt++;
 			}
@@ -64,6 +68,16 @@ public class BrickManager : MonoBehaviour {
 							y = Int32.Parse(coord[1]);
 
 							m_brickSize = new Vector2(x, y);
+						} else if (values.Length == 1 && values[0].Length > 0) {
+							// no '=' found and not a blank line
+							// brick coordinate
+							coord = line.Split(',');
+							if (coord.Length > 0) {
+								x = Int32.Parse(coord[0]);
+								y = Int32.Parse(coord[1]);
+
+								SpawnBrick(new Vector2(x, y));
+							}
 						}
 					}
 
@@ -78,5 +92,14 @@ public class BrickManager : MonoBehaviour {
 			Debug.Log (e.Message);
 			return false;
 		}
+	}
+
+	void SpawnBrick(Vector2 pos) {
+		// convert config coordinate to game world coordinates
+		Vector2 gamePos = new Vector2(kTopLeft.x + (pos.x * kCfgPixel), + kTopLeft.y - (pos.y * kCfgPixel));
+
+		SpriteRenderer renderer = m_brickPrefab.GetComponent<SpriteRenderer>();
+		renderer.color = Color.cyan;
+		Instantiate (m_brickPrefab, gamePos, Quaternion.identity);
 	}
 }
