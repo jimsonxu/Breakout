@@ -17,24 +17,6 @@ public class BrickManager : MonoBehaviour {
 	void Start () {
 		kTopLeft = new Vector2 (-6.87f, 4.6f);
 		LoadBricksCfg ();
-
-		Color colorOdd = Color.white;
-		Color colorEven = Color.cyan;
-		SpriteRenderer renderer = m_brickPrefab.GetComponent<SpriteRenderer>();
-		renderer.color = colorOdd;
-		int cnt = 1;
-
-		for (int x = 0; x < 5; x++) {
-			for (int y = 0; y < 5; y++) {
-				if (cnt % 2 == 0)
-					renderer.color = colorEven;
-				else
-					renderer.color = colorOdd;
-
-				Instantiate (m_brickPrefab, new Vector2 (x, y), Quaternion.identity);
-				cnt++;
-			}
-		}
 	}
 	
 	// Update is called once per frame
@@ -99,6 +81,11 @@ public class BrickManager : MonoBehaviour {
 		Vector2 gamePos = new Vector2(kTopLeft.x + (pos.x * kCfgPixel), + kTopLeft.y - (pos.y * kCfgPixel));
 
 		SpriteRenderer renderer = m_brickPrefab.GetComponent<SpriteRenderer>();
+		// brick position is at its center. We want to position this brick's top left corner at the current
+		// gamePos. Not pixel perfect but seems to look okay.
+		gamePos.x += renderer.bounds.extents.x;
+		gamePos.y -= renderer.bounds.extents.y;
+
 		renderer.color = Color.cyan;
 		Instantiate (m_brickPrefab, gamePos, Quaternion.identity);
 	}
