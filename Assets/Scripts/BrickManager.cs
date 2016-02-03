@@ -7,15 +7,19 @@ public class BrickManager : MonoBehaviour {
 
 	Vector2 kTopLeft;
 	const float kCfgPixel = 0.5f; // 1 cfg pixel is 0.5 game pixels
+	Vector2 kDefaultScale;
 
 	[SerializeField]
 	Transform m_brickPrefab;
 
 	Vector2 m_brickSize;
+	SpriteRenderer m_renderer;
 
 	// Use this for initialization
 	void Start () {
 		kTopLeft = new Vector2 (-6.87f, 4.6f);
+		kDefaultScale = new Vector2 (0.75f, 0.25f);
+		m_renderer = m_brickPrefab.GetComponent<SpriteRenderer> ();
 		LoadBricksCfg ();
 	}
 	
@@ -50,6 +54,8 @@ public class BrickManager : MonoBehaviour {
 							y = Int32.Parse(coord[1]);
 
 							m_brickSize = new Vector2(x, y);
+
+							m_renderer.transform.localScale = new Vector3(m_brickSize.x * kDefaultScale.x, m_brickSize.y * kDefaultScale.y, 0);
 						} else if (values.Length == 1 && values[0].Length > 0) {
 							// no '=' found and not a blank line
 							// brick coordinate
@@ -80,13 +86,12 @@ public class BrickManager : MonoBehaviour {
 		// convert config coordinate to game world coordinates
 		Vector2 gamePos = new Vector2(kTopLeft.x + (pos.x * kCfgPixel), + kTopLeft.y - (pos.y * kCfgPixel));
 
-		SpriteRenderer renderer = m_brickPrefab.GetComponent<SpriteRenderer>();
 		// brick position is at its center. We want to position this brick's top left corner at the current
 		// gamePos. Not pixel perfect but seems to look okay.
-		gamePos.x += renderer.bounds.extents.x;
-		gamePos.y -= renderer.bounds.extents.y;
+		gamePos.x += m_renderer.bounds.extents.x;
+		gamePos.y -= m_renderer.bounds.extents.y;
 
-		renderer.color = Color.cyan;
+		m_renderer.color = Color.cyan;
 		Instantiate (m_brickPrefab, gamePos, Quaternion.identity);
 	}
 }
