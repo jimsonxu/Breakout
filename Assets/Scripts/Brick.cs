@@ -7,10 +7,11 @@ public class Brick : MonoBehaviour {
 	Transform ballPrefab;
 
 	const string kPowerTagString = "Power";
+	const float kMinX = -2.5f;
+	const float kMaxX = 2.5f;
 
 	// Use this for initialization
 	void Start () {
-	
 	}
 	
 	// Update is called once per frame
@@ -20,7 +21,8 @@ public class Brick : MonoBehaviour {
 
 	void OnCollisionExit2D(Collision2D col) {
 		if (gameObject.tag == kPowerTagString) {
-			Instantiate (ballPrefab, Vector3.zero, Quaternion.identity);
+			Vector3 pos = new Vector3 (Random.Range (kMinX, kMaxX), 0, 0); 
+			Instantiate (ballPrefab, pos, Quaternion.identity);
 		}
 
 		Destroy (this.gameObject);
