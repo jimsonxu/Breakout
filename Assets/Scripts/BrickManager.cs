@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 public class BrickManager : MonoBehaviour {
 
@@ -19,12 +20,15 @@ public class BrickManager : MonoBehaviour {
 	Vector2 m_brickSize;
 	SpriteRenderer m_renderer;
 
+	HashSet<Transform> m_brickSet;
+
 	// Use this for initialization
 	void Start () {
 		kTopLeft = new Vector2 (-6.87f, 4.6f);
 		kDefaultScale = new Vector2 (0.75f, 0.25f);
 		kPowerColor = Color.yellow;
 		m_brickSize = Vector2.one;
+		m_brickSet = new HashSet<Transform> ();
 
 		m_renderer = m_brickPrefab.GetComponent<SpriteRenderer> ();
 		LoadBricksCfg ();
@@ -33,6 +37,22 @@ public class BrickManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	void OnEnable() {
+		Brick.OnBrickDestroyed += Brick_OnBrickDestroyed;
+	}
+
+	void Brick_OnBrickDestroyed (Transform brick)
+	{
+		m_brickSet.Remove (brick);
+		if (m_brickSet.Count <= 0) {
+			Debug.Log ("Game Over!");
+		}
+	}
+
+	void OnDisable() {
+		Brick.OnBrickDestroyed -= Brick_OnBrickDestroyed;
 	}
 
 	/***
@@ -120,6 +140,7 @@ public class BrickManager : MonoBehaviour {
 
 		m_renderer.color = Color.cyan;
 		Transform newObj = Instantiate (m_brickPrefab, gamePos, Quaternion.identity) as Transform;
+		m_brickSet.Add (newObj);
 
 		if (powOn) {
 			newObj.tag = kPowerTagString;

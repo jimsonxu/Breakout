@@ -10,6 +10,9 @@ public class Brick : MonoBehaviour {
 	const float kMinX = -2.5f;
 	const float kMaxX = 2.5f;
 
+	public delegate void BrickDestroyed(Transform brick);
+	public static event BrickDestroyed OnBrickDestroyed;
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -26,5 +29,9 @@ public class Brick : MonoBehaviour {
 		}
 
 		Destroy (this.gameObject);
+
+		if (OnBrickDestroyed != null) {
+			OnBrickDestroyed (transform);
+		}
 	}
 }
