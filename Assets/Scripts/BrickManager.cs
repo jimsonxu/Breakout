@@ -48,6 +48,8 @@ public class BrickManager : MonoBehaviour {
 		m_brickSet.Remove (brick);
 		if (m_brickSet.Count <= 0) {
 			Debug.Log ("Game Over!");
+			// enable gameobject text "GameOverText" to display the game over text
+			GameObject.Find ("GameOverUI").transform.GetChild (0).gameObject.SetActive (true);
 		}
 	}
 
