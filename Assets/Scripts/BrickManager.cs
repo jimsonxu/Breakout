@@ -41,6 +41,12 @@ public class BrickManager : MonoBehaviour {
 
 	void OnEnable() {
 		Brick.OnBrickDestroyed += Brick_OnBrickDestroyed;
+		Pit.OnBallDestroyed += HandleBallDestroyed;
+	}
+
+	void OnDisable() {
+		Brick.OnBrickDestroyed -= Brick_OnBrickDestroyed;
+		Pit.OnBallDestroyed -= HandleBallDestroyed;
 	}
 
 	void Brick_OnBrickDestroyed (Transform brick)
@@ -53,8 +59,8 @@ public class BrickManager : MonoBehaviour {
 		}
 	}
 
-	void OnDisable() {
-		Brick.OnBrickDestroyed -= Brick_OnBrickDestroyed;
+	void HandleBallDestroyed() {
+		Debug.Log ("Got ball destroyed");
 	}
 
 	/***
