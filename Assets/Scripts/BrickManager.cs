@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class BrickManager : MonoBehaviour {
 
+	// "Constants"
 	Vector2 kTopLeft;
 	const float kCfgPixel = 0.5f; // 1 cfg pixel is 0.5 game pixels
 	Vector2 kDefaultScale;
@@ -14,13 +15,19 @@ public class BrickManager : MonoBehaviour {
 	const string kPowerTagString = "Power";
 	Color kPowerColor;
 
+	// Globals
+	HashSet<Transform> m_brickSet;
+	int m_ballCnt = 1;
+
+	// Events
+	public delegate void SpawnBall();
+	public static event SpawnBall OnSpawnBall;
+
 	[SerializeField]
 	Transform m_brickPrefab;
 
 	Vector2 m_brickSize;
 	SpriteRenderer m_renderer;
-
-	HashSet<Transform> m_brickSet;
 
 	// Use this for initialization
 	void Start () {
@@ -51,6 +58,8 @@ public class BrickManager : MonoBehaviour {
 
 	void Brick_OnBrickDestroyed (Transform brick)
 	{
+		if (brick.tag == kPowerTagString) m_ballCnt++;
+
 		m_brickSet.Remove (brick);
 		if (m_brickSet.Count <= 0) {
 			Debug.Log ("Game Over!");
@@ -60,7 +69,12 @@ public class BrickManager : MonoBehaviour {
 	}
 
 	void HandleBallDestroyed() {
-		Debug.Log ("Got ball destroyed");
+		m_ballCnt--;
+		if (m_ballCnt < 1) {
+			if (OnSpawnBall != null) {
+				OnSpawnBall ();
+			}
+		}
 	}
 
 	/***

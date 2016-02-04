@@ -8,6 +8,9 @@ public class PaddleScript : MonoBehaviour {
 	[SerializeField]
 	float speed = 0.01f;
 
+	[SerializeField]
+	GameObject m_ballPrefab;
+
 	float kLeftLimit = -5.28f; // x position that we cannot go past
 	float kRightLimit = 5.28f;
 
@@ -34,5 +37,22 @@ public class PaddleScript : MonoBehaviour {
 			
 			myTransform.position = new Vector2 (newX, curPos.y);
 		}
+	}
+
+	void OnEnable() {
+		BrickManager.OnSpawnBall += HandleSpawnBall;
+	}
+
+	void OnDisable() {
+		BrickManager.OnSpawnBall -= HandleSpawnBall;
+	}
+
+	void HandleSpawnBall () {
+		SpriteRenderer renderer = GetComponent<SpriteRenderer> ();
+		SpriteRenderer ballRenderer = m_ballPrefab.GetComponent<SpriteRenderer> ();
+		// the ball's center is the spawning point
+		float y = myTransform.position.y + renderer.bounds.extents.y + ballRenderer.bounds.extents.y;
+		Vector3 pos = new Vector3 (myTransform.position.x, y, 0);
+		Instantiate(m_ballPrefab, pos, Quaternion.identity);
 	}
 }
