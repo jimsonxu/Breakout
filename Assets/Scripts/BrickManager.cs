@@ -23,6 +23,9 @@ public class BrickManager : MonoBehaviour {
 	public delegate void SpawnBall();
 	public static event SpawnBall OnSpawnBall;
 
+	// Amplitude Analytics
+	const string kGameStartEvent = "Game Started";
+
 	[SerializeField]
 	Transform m_brickPrefab;
 
@@ -39,6 +42,13 @@ public class BrickManager : MonoBehaviour {
 
 		m_renderer = m_brickPrefab.GetComponent<SpriteRenderer> ();
 		LoadBricksCfg ();
+		Amplitude.Instance.logEvent(kGameStartEvent);
+	}
+
+	void Awake () {
+		Amplitude amplitude = Amplitude.Instance;
+		amplitude.logging = true;
+		amplitude.init("cc59e0585575b5e3acb48067595423eb");
 	}
 	
 	// Update is called once per frame
