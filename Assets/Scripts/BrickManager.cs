@@ -15,9 +15,10 @@ public class BrickManager : MonoBehaviour {
 	const string kPowerTagString = "Power";
 	Color kPowerColor;
 
-	// Globals
+	// State Management
 	HashSet<Transform> m_brickSet;
 	int m_ballCnt = 1;
+	int m_numBallsLost = 0;
 
 	// Events
 	public delegate void SpawnBall();
@@ -25,6 +26,7 @@ public class BrickManager : MonoBehaviour {
 
 	// Amplitude Analytics
 	const string kGameStartEvent = "Game Started";
+	const string kGameOverEvent = "Game Ended";
 
 	[SerializeField]
 	Transform m_brickPrefab;
@@ -75,11 +77,17 @@ public class BrickManager : MonoBehaviour {
 			Debug.Log ("Game Over!");
 			// enable gameobject text "GameOverText" to display the game over text
 			GameObject.Find ("GameOverUI").transform.GetChild (0).gameObject.SetActive (true);
+
+			Dictionary<string, object> gameStats = new Dictionary<string, object> () {
+				{ "Balls Lost", m_numBallsLost }
+			};
+			Amplitude.Instance.logEvent (kGameOverEvent, gameStats);
 		}
 	}
 
 	void HandleBallDestroyed() {
 		m_ballCnt--;
+		m_numBallsLost++;
 		if (m_ballCnt < 1) {
 			if (OnSpawnBall != null) {
 				OnSpawnBall ();
