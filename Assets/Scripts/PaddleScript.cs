@@ -55,7 +55,8 @@ public class PaddleScript : MonoBehaviour {
 				BallScript ballScript = m_ball.GetComponent<BallScript> ();
 				ballScript.StartMoving (Vector2.right + Vector2.up);
 
-				OnReleaseBall ();
+				if (OnReleaseBall != null)
+					OnReleaseBall ();
 			}
 		}
 	}
