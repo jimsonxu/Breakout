@@ -25,7 +25,8 @@ public class Brick : MonoBehaviour {
 	void OnCollisionExit2D(Collision2D col) {
 		if (gameObject.tag == kPowerTagString) {
 			Vector3 pos = new Vector3 (Random.Range (kMinX, kMaxX), 0, 0); 
-			Instantiate (ballPrefab, pos, Quaternion.identity);
+			Transform ball = (Transform)Instantiate (ballPrefab, pos, Quaternion.identity);
+			ball.GetComponent<BallScript> ().StartMoving (Vector2.down);
 		}
 
 		Destroy (this.gameObject);

@@ -19,7 +19,6 @@ public class PaddleScript : MonoBehaviour {
 	//state
 	bool m_doHaveBall = true; // is there a ball on top of this paddle?
 	Transform m_ball;
-	float originalBallSpeed;
 
 	// Use this for initialization
 	void Start () {
@@ -51,8 +50,7 @@ public class PaddleScript : MonoBehaviour {
 
 				Rigidbody2D ballRigidBody = m_ball.GetComponent<Rigidbody2D> ();
 				BallScript ballScript = m_ball.GetComponent<BallScript> ();
-				ballScript.speed = originalBallSpeed;
-				ballRigidBody.velocity = (Vector2.right + Vector2.up).normalized * ballScript.speed;
+				ballScript.StartMoving (Vector2.right + Vector2.up);
 			}
 		}
 	}
@@ -75,8 +73,6 @@ public class PaddleScript : MonoBehaviour {
 		m_ball = Instantiate(m_ballPrefab, pos, Quaternion.identity) as Transform;
 		m_ball.parent = myTransform;
 		BallScript ballScript = m_ball.GetComponent<BallScript> ();
-		originalBallSpeed = ballScript.speed;
-		ballScript.speed = 0;
 
 		m_doHaveBall = true;
 	}

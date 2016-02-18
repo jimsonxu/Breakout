@@ -5,12 +5,18 @@ public class BallScript : MonoBehaviour {
 
 	public float speed = 5;
 
+	bool isStopped = true;
+
 	Rigidbody2D m_rigidBody;
 
 	// Use this for initialization
 	void Start () {
+	}
+
+	public void StartMoving(Vector2 dir) {
 		m_rigidBody = GetComponent<Rigidbody2D> ();
-		m_rigidBody.velocity = Vector2.down * speed;
+		m_rigidBody.velocity = dir.normalized * speed;
+		isStopped = false;
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
