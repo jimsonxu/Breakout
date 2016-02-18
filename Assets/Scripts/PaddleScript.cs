@@ -67,7 +67,8 @@ public class PaddleScript : MonoBehaviour {
 		SpriteRenderer renderer = GetComponent<SpriteRenderer> ();
 		SpriteRenderer ballRenderer = m_ballPrefab.GetComponent<SpriteRenderer> ();
 		// the ball's center is the spawning point
-		float y = myTransform.position.y + renderer.bounds.extents.y + ballRenderer.bounds.extents.y;
+		float buffer = 0.05f; // for aesthetics
+		float y = myTransform.position.y + renderer.bounds.extents.y + ballRenderer.bounds.extents.y + buffer;
 		Vector3 pos = new Vector3 (myTransform.position.x, y, 0);
 		m_ball = Instantiate(m_ballPrefab, pos, Quaternion.identity) as Transform;
 		m_ball.parent = myTransform;
