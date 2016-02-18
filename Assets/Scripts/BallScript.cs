@@ -9,6 +9,9 @@ public class BallScript : MonoBehaviour {
 
 	Rigidbody2D m_rigidBody;
 
+	const float kNudgeMax = 5f;
+	const float kNudgeMin = -5f;
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -28,5 +31,32 @@ public class BallScript : MonoBehaviour {
 			Vector2 newDir = new Vector2 (ballToPaddleX, 1).normalized;
 			m_rigidBody.velocity = newDir * m_rigidBody.velocity.magnitude;
 		}
+	}
+
+	void FixedUpdate() {
+		/*@!! This is a hack that nudges the ball so we aren't stuck in either the x or y axis, that is
+		 * the velocity in either direction is 0.
+		 */
+
+		// ignore nudging if we're not moving
+		if (isStopped)
+			return;
+		
+		Vector2 vel = m_rigidBody.velocity;
+		float newX = vel.x;
+		float newY = vel.y;
+
+		if (vel.x == 0) {
+			while ((newX = Random.Range (kNudgeMin, kNudgeMax)) == 0)
+				;
+		}
+
+		if (vel.y == 0) {
+			while ((newY = Random.Range (kNudgeMin, kNudgeMax)) == 0)
+				;
+		}
+
+		m_rigidBody.velocity = new Vector2 (newX, newY);
+
 	}
 }
