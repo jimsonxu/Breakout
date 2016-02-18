@@ -101,6 +101,7 @@ public class BrickManager : MonoBehaviour {
 		if (m_ballCnt < 1) {
 			if (OnSpawnBall != null) {
 				OnSpawnBall ();
+				m_ballCnt = 1;
 			}
 		}
 	}
