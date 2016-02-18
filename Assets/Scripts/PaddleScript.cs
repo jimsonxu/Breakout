@@ -2,21 +2,28 @@
 using System.Collections;
 
 public class PaddleScript : MonoBehaviour {
-	
+
+	// constants
+	const float kLeftLimit = -5.28f; // x position that we cannot go past
+	const float kRightLimit = 5.28f;
+
 	Transform myTransform;
 
+	// serialized fields
 	[SerializeField]
 	float speed = 0.01f;
 
 	[SerializeField]
-	GameObject m_ballPrefab;
+	Transform m_ballPrefab;
 
-	float kLeftLimit = -5.28f; // x position that we cannot go past
-	float kRightLimit = 5.28f;
+	//state
+	bool m_doHaveBall = true; // is there a ball on top of this paddle?
+	Transform m_ball;
 
 	// Use this for initialization
 	void Start () {
 		myTransform = GetComponent<Transform> ();
+		HandleSpawnBall ();
 	}
 	
 	// Update is called once per frame
@@ -36,6 +43,14 @@ public class PaddleScript : MonoBehaviour {
 				newX = kRightLimit;
 			
 			myTransform.position = new Vector2 (newX, curPos.y);
+		} else if (Input.GetKey (KeyCode.Space)) {
+			if (m_doHaveBall) {
+				m_doHaveBall = false;
+
+				Rigidbody2D ballRigidBody = m_ball.GetComponent<Rigidbody2D> ();
+				BallScript ballScript = m_ball.GetComponent<BallScript> ();
+				ballRigidBody.velocity = (Vector2.right + Vector2.up).normalized * ballScript.speed;
+			}
 		}
 	}
 
@@ -53,6 +68,8 @@ public class PaddleScript : MonoBehaviour {
 		// the ball's center is the spawning point
 		float y = myTransform.position.y + renderer.bounds.extents.y + ballRenderer.bounds.extents.y;
 		Vector3 pos = new Vector3 (myTransform.position.x, y, 0);
-		Instantiate(m_ballPrefab, pos, Quaternion.identity);
+		m_ball = Instantiate(m_ballPrefab, pos, Quaternion.identity) as Transform;
+
+		m_doHaveBall = true;
 	}
 }
