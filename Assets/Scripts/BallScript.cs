@@ -9,14 +9,11 @@ public class BallScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		m_rigidBody = GetComponent<Rigidbody2D> ();
+		m_rigidBody.velocity = Vector2.down * speed;
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
-		if (m_rigidBody == null) {
-			m_rigidBody = GetComponent<Rigidbody2D> ();
-		}
-
 		if (col.gameObject.name == "Paddle") {
 			/* Angle is determined by the ball's distance from center of paddle. Greater the distance,
 			 * sharper the angle (smaller angle).
