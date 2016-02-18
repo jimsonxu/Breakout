@@ -7,6 +7,9 @@ public class PaddleScript : MonoBehaviour {
 	const float kLeftLimit = -5.28f; // x position that we cannot go past
 	const float kRightLimit = 5.28f;
 
+	public delegate void ReleaseBall();
+	public static event ReleaseBall OnReleaseBall;
+
 	Transform myTransform;
 
 	// serialized fields
@@ -51,6 +54,8 @@ public class PaddleScript : MonoBehaviour {
 				Rigidbody2D ballRigidBody = m_ball.GetComponent<Rigidbody2D> ();
 				BallScript ballScript = m_ball.GetComponent<BallScript> ();
 				ballScript.StartMoving (Vector2.right + Vector2.up);
+
+				OnReleaseBall ();
 			}
 		}
 	}

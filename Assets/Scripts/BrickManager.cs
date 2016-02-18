@@ -15,18 +15,20 @@ public class BrickManager : MonoBehaviour {
 	const string kPowerTagString = "Power";
 	Color kPowerColor;
 
+	// Amplitude Analytics
+	const string kGameStartEvent = "Game Started";
+	const string kGameOverEvent = "Game Ended";
+
 	// State Management
 	HashSet<Transform> m_brickSet;
 	int m_ballCnt = 1;
 	int m_numBallsLost = 0;
 
+	bool isGameStarted = false;
+
 	// Events
 	public delegate void SpawnBall();
 	public static event SpawnBall OnSpawnBall;
-
-	// Amplitude Analytics
-	const string kGameStartEvent = "Game Started";
-	const string kGameOverEvent = "Game Ended";
 
 	[SerializeField]
 	Transform m_brickPrefab;
@@ -44,7 +46,6 @@ public class BrickManager : MonoBehaviour {
 
 		m_renderer = m_brickPrefab.GetComponent<SpriteRenderer> ();
 		LoadBricksCfg ();
-		Amplitude.Instance.logEvent(kGameStartEvent);
 	}
 
 	void Awake () {
@@ -61,11 +62,21 @@ public class BrickManager : MonoBehaviour {
 	void OnEnable() {
 		Brick.OnBrickDestroyed += Brick_OnBrickDestroyed;
 		Pit.OnBallDestroyed += HandleBallDestroyed;
+		PaddleScript.OnReleaseBall += GameStarted;
 	}
 
 	void OnDisable() {
 		Brick.OnBrickDestroyed -= Brick_OnBrickDestroyed;
 		Pit.OnBallDestroyed -= HandleBallDestroyed;
+		PaddleScript.OnReleaseBall -= GameStarted;
+	}
+
+	void GameStarted()
+	{
+		if (!isGameStarted) {
+			Amplitude.Instance.logEvent (kGameStartEvent);
+			isGameStarted = true;
+		}
 	}
 
 	void Brick_OnBrickDestroyed (Transform brick)
