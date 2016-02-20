@@ -51,7 +51,6 @@ public class PaddleScript : MonoBehaviour {
 				m_doHaveBall = false;
 				m_ball.parent = null;
 
-				Rigidbody2D ballRigidBody = m_ball.GetComponent<Rigidbody2D> ();
 				BallScript ballScript = m_ball.GetComponent<BallScript> ();
 				ballScript.StartMoving (Vector2.right + Vector2.up);
 
@@ -78,7 +77,6 @@ public class PaddleScript : MonoBehaviour {
 		Vector3 pos = new Vector3 (myTransform.position.x, y, 0);
 		m_ball = Instantiate(m_ballPrefab, pos, Quaternion.identity) as Transform;
 		m_ball.parent = myTransform;
-		BallScript ballScript = m_ball.GetComponent<BallScript> ();
 
 		m_doHaveBall = true;
 	}
