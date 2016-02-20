@@ -25,6 +25,7 @@ public class BrickManager : MonoBehaviour {
 	int m_numBallsLost = 0;
 
 	bool isGameStarted = false;
+	GameObject gameOverUI;
 
 	// Events
 	public delegate void SpawnBall();
@@ -52,6 +53,9 @@ public class BrickManager : MonoBehaviour {
 		Amplitude amplitude = Amplitude.Instance;
 		amplitude.logging = true;
 		amplitude.init("cc59e0585575b5e3acb48067595423eb");
+
+		gameOverUI = GameObject.Find ("GameOverUI");
+		gameOverUI.SetActive (false);
 	}
 	
 	// Update is called once per frame
@@ -79,6 +83,10 @@ public class BrickManager : MonoBehaviour {
 		}
 	}
 
+	public void RestartGame() {
+		Debug.Log ("Clicked");
+	}
+
 	void Brick_OnBrickDestroyed (Transform brick)
 	{
 		if (brick.tag == kPowerTagString) m_ballCnt++;
@@ -86,7 +94,7 @@ public class BrickManager : MonoBehaviour {
 		m_brickSet.Remove (brick);
 		if (m_brickSet.Count <= 0) {
 			// enable gameobject text "GameOverText" to display the game over text
-			GameObject.Find ("GameOverUI").transform.GetChild (0).gameObject.SetActive (true);
+			gameOverUI.SetActive (true);
 
 			Dictionary<string, object> gameStats = new Dictionary<string, object> () {
 				{ "Balls Lost", m_numBallsLost }
