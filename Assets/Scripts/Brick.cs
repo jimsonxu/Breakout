@@ -27,6 +27,7 @@ public class Brick : MonoBehaviour {
 			Vector3 pos = new Vector3 (Random.Range (kMinX, kMaxX), 0, 0); 
 			Transform ball = (Transform)Instantiate (ballPrefab, pos, Quaternion.identity);
 			ball.GetComponent<BallScript> ().StartMoving (Vector2.down);
+			BrickManager.AddNewBall (ball.gameObject);
 		}
 
 		Destroy (this.gameObject);

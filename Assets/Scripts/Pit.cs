@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Pit : MonoBehaviour {
 
-	public delegate void BallDestroyed();
+	public delegate void BallDestroyed(GameObject ball);
 	public static event BallDestroyed OnBallDestroyed;
 
 	// Use this for initialization
@@ -17,10 +17,10 @@ public class Pit : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
-		Destroy (col.gameObject);
-
 		if (OnBallDestroyed != null) {
-			OnBallDestroyed ();
+			OnBallDestroyed (col.gameObject);
 		}
+
+		Destroy (col.gameObject);
 	}
 }

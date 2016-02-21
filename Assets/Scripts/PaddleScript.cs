@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PaddleScript : MonoBehaviour {
 
@@ -23,10 +24,8 @@ public class PaddleScript : MonoBehaviour {
 	bool m_doHaveBall = true; // is there a ball on top of this paddle?
 	Transform m_ball;
 
-	// Use this for initialization
-	void Start () {
+	void Awake () {
 		myTransform = GetComponent<Transform> ();
-		HandleSpawnBall ();
 	}
 	
 	// Update is called once per frame
@@ -68,7 +67,7 @@ public class PaddleScript : MonoBehaviour {
 		BrickManager.OnSpawnBall -= HandleSpawnBall;
 	}
 
-	void HandleSpawnBall () {
+	void HandleSpawnBall (HashSet<GameObject> ballSet) {
 		SpriteRenderer renderer = GetComponent<SpriteRenderer> ();
 		SpriteRenderer ballRenderer = m_ballPrefab.GetComponent<SpriteRenderer> ();
 		// the ball's center is the spawning point
@@ -77,6 +76,7 @@ public class PaddleScript : MonoBehaviour {
 		Vector3 pos = new Vector3 (myTransform.position.x, y, 0);
 		m_ball = Instantiate(m_ballPrefab, pos, Quaternion.identity) as Transform;
 		m_ball.parent = myTransform;
+		ballSet.Add (m_ball.gameObject);
 
 		m_doHaveBall = true;
 	}

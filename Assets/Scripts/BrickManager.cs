@@ -21,14 +21,14 @@ public class BrickManager : MonoBehaviour {
 
 	// State Management
 	HashSet<Transform> m_brickSet;
-	int m_ballCnt = 1;
+	static HashSet<GameObject> m_ballSet;
 	int m_numBallsLost = 0;
 
 	bool isGameStarted = false;
 	GameObject gameOverUI;
 
 	// Events
-	public delegate void SpawnBall();
+	public delegate void SpawnBall(HashSet<GameObject> ballSet);
 	public static event SpawnBall OnSpawnBall;
 
 	[SerializeField]
@@ -44,9 +44,10 @@ public class BrickManager : MonoBehaviour {
 		kPowerColor = Color.yellow;
 		m_brickSize = Vector2.one;
 		m_brickSet = new HashSet<Transform> ();
+		m_ballSet = new HashSet<GameObject> ();
 
 		m_renderer = m_brickPrefab.GetComponent<SpriteRenderer> ();
-		LoadBricksCfg ();
+		RestartGame ();
 	}
 
 	void Awake () {
@@ -84,13 +85,25 @@ public class BrickManager : MonoBehaviour {
 	}
 
 	public void RestartGame() {
-		Debug.Log ("Clicked");
+		// clear old game stuff
+		foreach (GameObject ball in m_ballSet) {
+			Destroy (ball);
+		}
+		m_ballSet.Clear ();
+		m_numBallsLost = 0;
+		gameOverUI.SetActive (false);
+
+		// begin new game
+		LoadBricksCfg ();
+		OnSpawnBall (m_ballSet);
+	}
+
+	public static void AddNewBall(GameObject ball) {
+		m_ballSet.Add(ball);
 	}
 
 	void Brick_OnBrickDestroyed (Transform brick)
 	{
-		if (brick.tag == kPowerTagString) m_ballCnt++;
-
 		m_brickSet.Remove (brick);
 		if (m_brickSet.Count <= 0) {
 			// enable gameobject text "GameOverText" to display the game over text
@@ -103,13 +116,13 @@ public class BrickManager : MonoBehaviour {
 		}
 	}
 
-	void HandleBallDestroyed() {
-		m_ballCnt--;
+	void HandleBallDestroyed(GameObject ball) {
+		m_ballSet.Remove (ball);
 		m_numBallsLost++;
-		if (m_ballCnt < 1) {
+
+		if (m_ballSet.Count < 1) {
 			if (OnSpawnBall != null) {
-				OnSpawnBall ();
-				m_ballCnt = 1;
+				OnSpawnBall (m_ballSet);
 			}
 		}
 	}
