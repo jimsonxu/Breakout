@@ -138,6 +138,8 @@ public class BrickManager : MonoBehaviour {
 	 */
 	bool LoadBricksCfg() {
 		try {
+			TextAsset t = Resources.Load("bricks") as TextAsset;
+			Debug.Log(t);
 			TextReader reader = new StreamReader ("Assets/bricks.cfg");
 
 			using (reader) {
