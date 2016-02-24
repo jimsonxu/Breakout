@@ -20,9 +20,13 @@ public class PaddleScript : MonoBehaviour {
 	[SerializeField]
 	Transform m_ballPrefab;
 
-	//state
+	/*********
+	 * state *
+	 *********/
 	bool m_doHaveBall = true; // is there a ball on top of this paddle?
 	Transform m_ball;
+
+	Vector3 startTouch = Vector3.zero;
 
 	void Awake () {
 		myTransform = GetComponent<Transform> ();
@@ -57,6 +61,8 @@ public class PaddleScript : MonoBehaviour {
 					OnReleaseBall ();
 			}
 		}
+
+		ProcessMobileInput (curPos);
 	}
 
 	void OnEnable() {
@@ -65,6 +71,25 @@ public class PaddleScript : MonoBehaviour {
 
 	void OnDisable() {
 		BrickManager.OnSpawnBall -= HandleSpawnBall;
+	}
+
+	void ProcessMobileInput(Vector2 curPos) {
+		if (Input.touchCount > 0) {
+			Touch touch = Input.GetTouch (0);
+
+			if (touch.phase == TouchPhase.Began) {
+				startTouch = Camera.main.ScreenToWorldPoint (touch.position);
+			} else if (touch.phase == TouchPhase.Moved) {
+				Vector3 newPos = Camera.main.ScreenToWorldPoint(touch.position);
+				float deltaX = newPos.x - startTouch.x;
+				float newX = curPos.x + deltaX;
+				myTransform.position = new Vector2(newX, curPos.y);
+
+				startTouch = newPos;
+			} else if (touch.phase == TouchPhase.Ended) {
+				startTouch = Vector3.zero;
+			}
+		}
 	}
 
 	void HandleSpawnBall (HashSet<GameObject> ballSet) {
