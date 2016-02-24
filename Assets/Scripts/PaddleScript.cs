@@ -50,16 +50,7 @@ public class PaddleScript : MonoBehaviour {
 			
 			myTransform.position = new Vector2 (newX, curPos.y);
 		} else if (Input.GetKey (KeyCode.Space)) {
-			if (m_doHaveBall) {
-				m_doHaveBall = false;
-				m_ball.parent = null;
-
-				BallScript ballScript = m_ball.GetComponent<BallScript> ();
-				ballScript.StartMoving (Vector2.right + Vector2.up);
-
-				if (OnReleaseBall != null)
-					OnReleaseBall ();
-			}
+			DoReleaseBallEvent ();
 		}
 
 		ProcessMobileInput (curPos);
@@ -77,6 +68,10 @@ public class PaddleScript : MonoBehaviour {
 		if (Input.touchCount > 0) {
 			Touch touch = Input.GetTouch (0);
 
+			if (touch.tapCount > 1) {
+				DoReleaseBallEvent ();
+			}
+
 			if (touch.phase == TouchPhase.Began) {
 				startTouch = Camera.main.ScreenToWorldPoint (touch.position);
 			} else if (touch.phase == TouchPhase.Moved) {
@@ -89,6 +84,19 @@ public class PaddleScript : MonoBehaviour {
 			} else if (touch.phase == TouchPhase.Ended) {
 				startTouch = Vector3.zero;
 			}
+		}
+	}
+
+	void DoReleaseBallEvent() {
+		if (m_doHaveBall) {
+			m_doHaveBall = false;
+			m_ball.parent = null;
+
+			BallScript ballScript = m_ball.GetComponent<BallScript> ();
+			ballScript.StartMoving (Vector2.right + Vector2.up);
+
+			if (OnReleaseBall != null)
+				OnReleaseBall ();
 		}
 	}
 
