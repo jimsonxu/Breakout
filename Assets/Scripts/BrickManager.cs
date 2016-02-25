@@ -20,6 +20,8 @@ public class BrickManager : MonoBehaviour {
 	const string kGameOverEvent = "Game Ended";
 
 	// State Management
+	DeviceOrientation currentOrientation;
+
 	HashSet<Transform> m_brickSet;
 	static HashSet<GameObject> m_ballSet;
 	int m_numBallsLost = 0;
@@ -39,6 +41,7 @@ public class BrickManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		SetupCamera ();
 		kTopLeft = new Vector2 (-6.87f, 4.6f);
 		kDefaultScale = new Vector2 (0.75f, 0.25f);
 		kPowerColor = Color.yellow;
@@ -61,7 +64,16 @@ public class BrickManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		// Adjust for mobile device rotation from portrait to landscape or vice versa
+		if (IsPortrait (currentOrientation)) {
+			if (Screen.width > Screen.height) {
+				SetupCamera ();
+			}
+		} else {
+			if (Screen.height > Screen.width) {
+				SetupCamera ();
+			}
+		}
 	}
 
 	void OnEnable() {
@@ -74,6 +86,42 @@ public class BrickManager : MonoBehaviour {
 		Brick.OnBrickDestroyed -= Brick_OnBrickDestroyed;
 		Pit.OnBallDestroyed -= HandleBallDestroyed;
 		PaddleScript.OnReleaseBall -= GameStarted;
+	}
+
+	bool IsPortrait(DeviceOrientation orient) {
+		return orient == DeviceOrientation.Portrait || orient == DeviceOrientation.PortraitUpsideDown;
+	}
+
+	bool IsLandscape(DeviceOrientation orient) {
+		return orient == DeviceOrientation.LandscapeLeft || orient == DeviceOrientation.LandscapeRight;
+	}
+
+	// Camera size calculations copied from http://forum.unity3d.com/threads/android-resolutions.211905/
+	void SetupCamera() {
+		float TARGET_WIDTH = 1280.0f;
+		float TARGET_HEIGHT = 800.0f;
+		int PIXELS_TO_UNITS = 80;
+
+		float desiredRatio = TARGET_WIDTH / TARGET_HEIGHT;
+		float currentRatio = (float)Screen.width/(float)Screen.height;
+
+		if(currentRatio >= desiredRatio)
+		{
+			// Our resolution has plenty of width, so we just need to use the height to determine the camera size
+			Camera.main.orthographicSize = TARGET_HEIGHT / 2 / PIXELS_TO_UNITS;
+		}
+		else
+		{
+			// Our camera needs to zoom out further than just fitting in the height of the image.
+			// Determine how much bigger it needs to be, then apply that to our original algorithm.
+			float differenceInSize = desiredRatio / currentRatio;
+			Camera.main.orthographicSize = TARGET_HEIGHT / 2 / PIXELS_TO_UNITS * differenceInSize;
+		}
+
+		if (Screen.height < Screen.width)
+			currentOrientation = DeviceOrientation.LandscapeLeft;
+		else
+			currentOrientation = DeviceOrientation.Portrait;
 	}
 
 	void GameStarted()
