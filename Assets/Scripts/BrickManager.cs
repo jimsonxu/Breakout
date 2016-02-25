@@ -15,6 +15,8 @@ public class BrickManager : MonoBehaviour {
 	const string kPowerTagString = "Power";
 	Color kPowerColor;
 
+	const int kIgnoreBallLayer = 8;
+
 	// Amplitude Analytics
 	const string kGameStartEvent = "Game Started";
 	const string kGameOverEvent = "Game Ended";
@@ -50,6 +52,10 @@ public class BrickManager : MonoBehaviour {
 		m_ballSet = new HashSet<GameObject> ();
 
 		m_renderer = m_brickPrefab.GetComponent<SpriteRenderer> ();
+
+		// ignore collisions between ball objects
+		Physics2D.IgnoreLayerCollision (kIgnoreBallLayer, kIgnoreBallLayer);
+
 		RestartGame ();
 	}
 
