@@ -6,7 +6,7 @@ public class PaddleScript : MonoBehaviour {
 
 	// constants
 	const float kLeftLimit = -5.28f; // x position that we cannot go past
-	const float kRightLimit = 5.28f;
+	const float kRightLimit = 5.55f;
 
 	public delegate void ReleaseBall();
 	public static event ReleaseBall OnReleaseBall;
@@ -78,6 +78,12 @@ public class PaddleScript : MonoBehaviour {
 				Vector3 newPos = Camera.main.ScreenToWorldPoint(touch.position);
 				float deltaX = newPos.x - startTouch.x;
 				float newX = curPos.x + deltaX;
+
+				if (newX > kRightLimit)
+					newX = kRightLimit;
+				else if (newX < kLeftLimit)
+					newX = kLeftLimit;
+
 				myTransform.position = new Vector2(newX, curPos.y);
 
 				startTouch = newPos;
