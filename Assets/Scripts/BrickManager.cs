@@ -6,14 +6,14 @@ using System.Collections.Generic;
 
 public class BrickManager : MonoBehaviour {
 
-	// "Constants"
-	Vector2 kTopLeft;
+	// Constants
+	readonly Vector2 kTopLeft = new Vector2 (-6.87f, 4.6f);
 	const float kCfgPixel = 0.5f; // 1 cfg pixel is 0.5 game pixels
-	Vector2 kDefaultScale;
+	readonly Vector2 kDefaultScale = new Vector2 (0.75f, 0.25f);
 
 	bool kPowOn = true;
 	const string kPowerTagString = "Power";
-	Color kPowerColor;
+	readonly Color kPowerColor = Color.yellow;
 
 	const int kIgnoreBallLayer = 8;
 
@@ -44,9 +44,6 @@ public class BrickManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		SetupCamera ();
-		kTopLeft = new Vector2 (-6.87f, 4.6f);
-		kDefaultScale = new Vector2 (0.75f, 0.25f);
-		kPowerColor = Color.yellow;
 		m_brickSize = Vector2.one;
 		m_brickSet = new HashSet<Transform> ();
 		m_ballSet = new HashSet<GameObject> ();
