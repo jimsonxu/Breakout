@@ -29,7 +29,7 @@ public class BrickManager : MonoBehaviour {
 	int m_numBallsLost = 0;
 
 	bool isGameStarted = false;
-	GameObject gameOverUI;
+	public static GameObject gameOverUI { get; private set; }
 
 	// Events
 	public delegate void SpawnBall(HashSet<GameObject> ballSet);
@@ -162,6 +162,7 @@ public class BrickManager : MonoBehaviour {
 		if (m_brickSet.Count <= 0) {
 			// enable gameobject text "GameOverText" to display the game over text
 			gameOverUI.SetActive (true);
+			isGameStarted = false;
 
 			Dictionary<string, object> gameStats = new Dictionary<string, object> () {
 				{ "Balls Lost", m_numBallsLost }

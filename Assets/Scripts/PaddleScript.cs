@@ -27,6 +27,7 @@ public class PaddleScript : MonoBehaviour {
 	Transform m_ball;
 
 	Vector3 startTouch = Vector3.zero;
+	bool tapCanceled = false;
 
 	void Awake () {
 		myTransform = GetComponent<Transform> ();
@@ -74,6 +75,10 @@ public class PaddleScript : MonoBehaviour {
 
 			if (touch.phase == TouchPhase.Began) {
 				startTouch = Camera.main.ScreenToWorldPoint (touch.position);
+				tapCanceled = false;
+
+				if (BrickManager.gameOverUI.activeInHierarchy)
+					tapCanceled = true;
 			} else if (touch.phase == TouchPhase.Moved) {
 				Vector3 newPos = Camera.main.ScreenToWorldPoint(touch.position);
 				float deltaX = newPos.x - startTouch.x;
@@ -87,7 +92,12 @@ public class PaddleScript : MonoBehaviour {
 				myTransform.position = new Vector2(newX, curPos.y);
 
 				startTouch = newPos;
+				tapCanceled = true;
 			} else if (touch.phase == TouchPhase.Ended) {
+				Vector3 end = Camera.main.ScreenToWorldPoint (touch.position);
+				if (!tapCanceled && startTouch == end) {
+					DoReleaseBallEvent ();
+				}
 				startTouch = Vector3.zero;
 			}
 		}
