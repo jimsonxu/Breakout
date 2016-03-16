@@ -24,7 +24,14 @@ public class BallScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
-		audioSrc.PlayOneShot (audioSrc.clip, 1f);
+		if (col.gameObject.name != "Pit") {
+			// in a normal game, max velocity empirically tested to roughly max out at 8
+			float vol = col.relativeVelocity.magnitude / 8f;
+			if (vol > 1) {
+				vol = 1;
+			}
+			audioSrc.PlayOneShot (audioSrc.clip, vol);
+		}
 
 		if (col.gameObject.name == "Paddle") {
 			/* Angle is determined by the ball's distance from center of paddle. Greater the distance,
