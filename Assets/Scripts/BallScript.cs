@@ -8,12 +8,13 @@ public class BallScript : MonoBehaviour {
 	bool isStopped = true;
 
 	Rigidbody2D m_rigidBody;
+	AudioSource audioSrc;
 
 	const float kNudgeMax = 5f;
 	const float kNudgeMin = -5f;
 
-	// Use this for initialization
-	void Start () {
+	void Awake () {
+		audioSrc = GetComponent<AudioSource> ();
 	}
 
 	public void StartMoving(Vector2 dir) {
@@ -23,6 +24,8 @@ public class BallScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
+		audioSrc.PlayOneShot (audioSrc.clip, 1f);
+
 		if (col.gameObject.name == "Paddle") {
 			/* Angle is determined by the ball's distance from center of paddle. Greater the distance,
 			 * sharper the angle (smaller angle).
